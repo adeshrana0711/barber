@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barber Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    display:flex;
+    background:#f4f6f9;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    width:260px;
+    height:100vh;
+    background:#111827;
+    color:white;
+    padding:20px;
+    position:fixed;
+}
+
+.profile{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.profile img{
+    width:95px;
+    height:95px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #2563eb;
+    margin-bottom:10px;
+}
+
+.profile h3{
+    font-size:18px;
+}
+
+.menu{
+    list-style:none;
+}
+
+.menu li{
+    margin:12px 0;
+}
+
+.menu a{
+    color:white;
+    text-decoration:none;
+    display:block;
+    padding:12px;
+    border-radius:8px;
+    transition:.3s;
+}
+
+.menu a:hover{
+    background:#2563eb;
+}
+.main{
+    margin-left:260px;
+    padding:30px;
+    width:100%;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 18px rgba(0,0,0,0.05);
+    margin-bottom:20px;
+}
+
+h2{
+    margin-bottom:15px;
+}
+
+.stats{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.stat-box{
+    flex:1;
+    min-width:200px;
+    background:#2563eb;
+    color:white;
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+    text-align:left;
+}
+
+.status{
+    padding:5px 10px;
+    border-radius:6px;
+    color:white;
+    font-size:12px;
+}
+
+.booked{background:#2563eb;}
+.completed{background:#16a34a;}
+
+.btn{
+    padding:10px 15px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    margin-bottom:15px;
+}
+
+.btn:hover{
+    background:#1e40af;
+}
+
+.section{display:none;}
+.section.active{display:block;}
+
+.modal{
+    display:none;
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    background:white;
+    padding:25px;
+    width:350px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-content input,.modal-content select{
+    width:100%;
+    padding:10px;
+    margin:8px 0 15px 0;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+.modal-buttons{
+    display:flex;
+    justify-content:space-between;
+}
+
+.cancel{background:#dc2626;}
+.cancel:hover{background:#991b1b;}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="profile">
+        <img id="barberImage" src="/images/default-barber.jpg">
+        <h3 id="barberName">Barber</h3>
+    </div>
+
+    <ul class="menu">
+        <li><a href="#" onclick="showSection('dashboard')">Dashboard</a></li>
+        <li><a href="#" onclick="showSection('orders')">Orders</a></li>
+        <li><a href="#" onclick="showSection('availability')">Availability</a></li>
+        <li><a href="#" onclick="showSection('profile')">Edit Profile</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+
+</div>
+
+<div class="main">
+
+    <div id="dashboard" class="section active">
+
+        <div class="card">
+            <h2>Dashboard Overview</h2>
+            <div class="stats">
+                <div class="stat-box">
+                    <h3 id="totalBookings">0</h3>
+                    <p>Total Bookings</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="todayBookings">0</h3>
+                    <p>Today's Bookings</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="availableSlots">0</h3>
+                    <p>Available Slots</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Available Barbers</h2>
+    <button class="btn" onclick="openModal()">+ Add New Barber</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="barberList"></tbody>
+    </table>
+
+    </div>
+    </div>
+    <div id="orders" class="section">
+        <div class="card">
+            <h2>Appointments</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTable">
+                    <tr>
+                        <td>Rahul</td>
+                        <td>2026-02-12</td>
+                        <td>2:30 PM - 3:30 PM</td>
+                        <td><span class="status booked">Booked</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <div id="availability" class="section">
+        <div class="card">
+            <h2>Set Availability</h2>
+
+            <label>Working From</label>
+            <input type="time">
+
+            <label>Working To</label>
+            <input type="time">
+
+            <br><br>
+            <button class="btn">Save Availability</button>
+
+        </div>
+    </div>
+    <div id="profile" class="section">
+        <div class="card">
+            <h2>Edit Profile</h2>
+
+            <label>Name</label>
+            <input type="text" placeholder="Barber Name">
+
+            <label>Location</label>
+            <input type="text" placeholder="Shop Location">
+
+            <label>Phone</label>
+            <input type="text" placeholder="Phone Number">
+
+            <br><br>
+            <button class="btn">Update Profile</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="barberModal" class="modal">
+    <div class="modal-content">
+        <h2>Add New Barber</h2>
+
+        <label>Name</label>
+        <input type="text" id="bName">
+
+        <label>Location</label>
+        <input type="text" id="bLocation">
+
+        <label>Status</label>
+        <select id="bStatus">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+        </select>
+
+        <label>Skills</label>
+        <input type="text" id="bSkills" placeholder="Haircut, Beard, Fade">
+
+        <div class="modal-buttons">
+            <button class="btn" onclick="addBarber()">Save</button>
+            <button class="btn cancel" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+<script>
+
+/* SECTION SWITCH */
+function showSection(id){
+    document.querySelectorAll(".section").forEach(sec=>{
+        sec.classList.remove("active");
+    });
+    document.getElementById(id).classList.add("active");
+}
+
+/* MODAL CONTROL */
+function openModal(){
+    document.getElementById("barberModal").style.display="flex";
+}
+function closeModal(){
+    document.getElementById("barberModal").style.display="none";
+}
+
+/* LOAD BARBERS WHEN PAGE OPENS */
+window.onload = loadBarbers;
+
+async function loadBarbers(){
+    const res = await fetch("/api/barbers/all");
+    const barbers = await res.json();
+
+    const table = document.getElementById("barberList");
+    table.innerHTML="";
+
+    barbers.forEach(b=>{
+        const statusClass = b.status==="Active"?"booked":"completed";
+
+        table.insertAdjacentHTML("beforeend",`
+        <tr data-id="${b._id}">
+            <td><strong>${b.name}</strong><br><small>${b.skills}</small></td>
+            <td>${b.location}</td>
+            <td><span class="status ${statusClass}">${b.status}</span></td>
+            <td>
+                <button onclick="toggleStatus(this)" class="btn">
+                    ${b.status==="Active"?"Deactivate":"Activate"}
+                </button>
+                <button onclick="deleteBarber(this)" class="btn cancel">Delete</button>
+            </td>
+        </tr>
+        `);
+    });
+}
+
+/* ADD BARBER (SAVE TO DATABASE) */
+async function addBarber(){
+
+    const name=document.getElementById("bName").value;
+    const location=document.getElementById("bLocation").value;
+    const status=document.getElementById("bStatus").value;
+    const skills=document.getElementById("bSkills").value;
+
+    if(!name||!location||!skills){
+        alert("Please fill all fields");
+        return;
+    }
+
+    const res = await fetch("/api/barbers/add",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({name,location,skills,status})
+    });
+
+    const data = await res.json();
+
+    closeModal();
+    document.getElementById("bName").value="";
+    document.getElementById("bLocation").value="";
+    document.getElementById("bSkills").value="";
+
+    loadBarbers(); // refresh table
+}
+
+/* TOGGLE ACTIVE / INACTIVE */
+async function toggleStatus(btn){
+
+    const row = btn.closest("tr");
+    const id = row.dataset.id;
+
+    const res = await fetch(`/api/barbers/status/${id}`,{method:"PATCH"});
+    const barber = await res.json();
+
+    const statusSpan=row.querySelector(".status");
+
+    if(barber.status==="Active"){
+        statusSpan.innerText="Active";
+        statusSpan.className="status booked";
+        btn.innerText="Deactivate";
+    }else{
+        statusSpan.innerText="Inactive";
+        statusSpan.className="status completed";
+        btn.innerText="Activate";
+    }
+}
+
+/* DELETE BARBER */
+async function deleteBarber(btn){
+
+    if(!confirm("Remove this barber?")) return;
+
+    const row=btn.closest("tr");
+    const id=row.dataset.id;
+
+    await fetch(`/api/barbers/${id}`,{method:"DELETE"});
+    row.remove();
+}
+
+/* CLICK OUTSIDE CLOSE MODAL */
+window.onclick=function(e){
+    if(e.target.id==="barberModal"){
+        closeModal();
+    }
+}
+
+</script>
+</body>
+</html>

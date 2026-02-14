@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Signup | Auth UI</title>
+    <link rel="stylesheet" href="/css/regisClient.css"/>
+</head>
+<body>
+
+<div class="auth-container">
+
+    <div class="form-box signup active">
+        <h2>Create Account</h2>
+
+       <div class="social-container">
+            <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+            <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <span class="or">OR</span>
+        <form action="/client/registration" method="POST">
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <p class="switch">Already have an account?<a href="/client/login" id="toLogin">Login</a></p>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

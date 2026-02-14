@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="/css/login.css">
+           
+</head>
+
+<body>
+    <div class="welcome-container">
+        <h1>Welcome to Barq</h1>
+        <p>Our app makes sure that your hair should be your style. Feel free to contact us for any queries or information.</p>
+    </div>
+
+    <div class="container">
+        <form action="/barber/login" method="POST">
+            <h2>Login</h2>
+            <div class="input-group">
+                <label for="username">Email:</label>
+                <div class="input-container">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" name="email" placeholder="Enter your email" required>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <div class="input-container">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+            </div>
+            <input type="submit" value="Login">
+        </form>
+        <div class="social-login">
+            <p>Or login with:</p>
+            <button class="facebook"id="fb-login-button">
+                <i class="fab fa-facebook-f"></i> Facebook
+            </button>
+            <button class="google" id="google-login-button">
+                <i class="fab fa-google"></i> Google
+            </button>
+            <button class="twitter">
+                <i class="fab fa-twitter"></i> Twitter
+            </button>
+        </div>
+        <p class="signin">Don't have an account? <a href="/barber/registration">Sign up</a></p>
+    </div>
+    
+</body>
+
+</html>

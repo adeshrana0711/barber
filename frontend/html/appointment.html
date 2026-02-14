@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Book Appointment</title>
+
+<style>
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#f4f6f9;
+}
+
+.container{
+    max-width:480px;
+    margin:60px auto;
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+}
+
+h2{text-align:center;margin-bottom:20px;}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ddd;
+    border-radius:6px;
+}
+
+.slot-container{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:15px;
+}
+
+.slot{
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #2563eb;
+    background:white;
+    cursor:pointer;
+    text-align:center;
+    transition:.3s;
+}
+
+.slot:hover{
+    background:#2563eb;
+    color:white;
+}
+
+.slot.active{
+    background:#2563eb;
+    color:white;
+}
+
+.slot.disabled{
+    background:#ccc;
+    border:none;
+    cursor:not-allowed;
+    color:#777;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#2563eb;
+    border:none;
+    color:white;
+    border-radius:8px;
+    margin-top:20px;
+    cursor:pointer;
+}
+
+button:hover{background:#1e40af;}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Book Appointment</h2>
+
+<p><strong>Barber:</strong> <span id="barberName">Loading...</span></p>
+
+<label>Select Date</label>
+<input type="date" id="date" required>
+
+<div class="slot-container" id="slotContainer"></div>
+
+<button onclick="confirmBooking()">Confirm Booking</button>
+
+</div>
+
+<script>
+
+const barberId = window.location.pathname.split("/").pop();
+let selectedSlot = "";
+
+fetch('/barbers')
+.then(res=>res.json())
+.then(barbers=>{
+    const barber = barbers.find(b=>b._id === barberId);
+    if(barber){
+        document.getElementById("barberName").innerText = barber.name;
+    }
+});
+function generateSlots(){
+
+    const container = document.getElementById("slotContainer");
+    container.innerHTML = "";
+
+    const startHour = 14; 
+    const endHour = 18;   
+
+    for(let hour=startHour; hour<endHour; hour++){
+
+        const start = formatTime(hour,30);
+        const end = formatTime(hour+1,30);
+
+        const slotTime = `${start} - ${end}`;
+
+        const div = document.createElement("div");
+        div.className = "slot";
+        div.innerText = slotTime;
+
+        div.onclick = ()=>{
+            if(div.classList.contains("disabled")) return;
+
+            document.querySelectorAll(".slot").forEach(s=>s.classList.remove("active"));
+            div.classList.add("active");
+            selectedSlot = slotTime;
+        };
+
+        container.appendChild(div);
+    }
+}
+
+function formatTime(hour,minute){
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const h = hour > 12 ? hour - 12 : hour;
+    return `${h}:${minute} ${ampm}`;
+}
+
+document.getElementById("date").addEventListener("change", async function(){
+
+    selectedSlot = "";
+    generateSlots();
+
+    const date = this.value;
+
+    const res = await fetch(`/appointment/${barberId}/booked?date=${date}`);
+    const bookedSlots = await res.json();
+
+    document.querySelectorAll(".slot").forEach(slot=>{
+        if(bookedSlots.includes(slot.innerText)){
+            slot.classList.add("disabled");
+        }
+    });
+});
+
+// Confirm booking
+async function confirmBooking(){
+
+    const date = document.getElementById("date").value;
+
+    if(!date){
+        alert("Please select date");
+        return;
+    }
+
+    if(!selectedSlot){
+        alert("Please select time slot");
+        return;
+    }
+
+    const res = await fetch(`/appointment/${barberId}`,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({date,time:selectedSlot})
+    });
+
+    const msg = await res.text();
+
+    if(msg === "Booking Successful"){
+        alert(`Booking Confirmed!\nDate: ${date}\nTime: ${selectedSlot}`);
+        window.location.href="/client/dashboard";
+    }else{
+        alert(msg);
+    }
+}
+
+</script>
+
+</body>
+</html>

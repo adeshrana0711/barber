@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barber Registration</title>
+    <link rel="stylesheet" href="/css/registration.css">     
+</head>
+<body>
+    <div id="c">
+    <div class="container">
+        <h1>Barber Registration</h1>
+        <form action="/barber/registration" method="POST">
+            <div class="input-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+            </div>
+        
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+        
+            <div class="input-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+            </div>
+        
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required>
+            </div>
+
+            <div class="input-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" placeholder="Enter your location" required>
+            </div>
+
+            <button type="submit">Register</button>
+            <p class="signin">Already have an account? <a href="/barber/login">Sign In</a></p>
+        </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.auth-container {
+    width: 380px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    overflow: hidden;
+    position: relative;
+}
+
+.form-box {
+    padding: 35px;
+    text-align: center;
+    display: none;
+}
+
+.form-box.active {
+    display: block;
+    animation: fadeSlide 0.5s ease;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.social-container{
+    margin:20px 0px;
+}
+.social-container a{
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin:0px 5px;
+    height: 40px;
+    width: 40px;
+    color: var(--grad-clr1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.social-container a:hover {
+    background: var(--linear-grad);
+    color: white;
+    transform: scale(1.1);
+}
+.google {
+    background: #db4437;
+}
+
+.facebook {
+    background: #1877f2;
+}
+
+.or {
+    display: block;
+    margin: 15px 0;
+    font-size: 13px;
+    color: #777;
+}
+
+/* Inputs */
+form input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    outline: none;
+}
+
+form input:focus {
+    border-color: #667eea;
+}
+
+/* Buttons */
+form button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+form button:hover {
+    transform: translateY(-2px);
+}
+
+/* Switch link */
+.switch {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.switch a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Animation */
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
