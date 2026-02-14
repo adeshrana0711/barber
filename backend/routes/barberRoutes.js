@@ -1,40 +1,55 @@
 const express = require("express");
 const router = express.Router();
 const Barber = require("../models/Barber");
+const auth = require("../middlewares/auth");
 
-router.post("/add", async(req,res)=>{
+router.get("/all", auth("shop"), async (req,res)=>{
+    const barbers = await Barber.find({shop:req.user.id});
+    res.json(barbers);
+});
+
+   router.post("/add", auth("shop"), async (req,res)=>{
     try{
-        const barber = await Barber.create({
+        console.log("BODY:",req.body);
+        console.log("USER:",req.user);
+
+        const barber = new Barber({
             name:req.body.name,
             location:req.body.location,
             skills:req.body.skills,
             status:req.body.status,
-            shop:req.user.shopId
+            shop:req.user.id
         });
 
+        await barber.save();
+
         res.json(barber);
+
     }catch(err){
-        res.status(500).json({error:"Failed"});
+        console.log("ADD BARBER ERROR:",err.message);
+        res.status(500).send(err.message);
     }
 });
 
-router.get("/all", async (req,res)=>{
-    const barbers = await Barber.find().sort({createdAt:-1});
-    res.json(barbers);
-});
+router.patch("/status/:id", auth("shop"), async(req,res)=>{
+    const barber = await Barber.findOne({_id:req.params.id, shop:req.user.id});
 
-router.patch("/status/:id", async (req,res)=>{
-    const barber = await Barber.findById(req.params.id);
+    if(!barber) return res.status(404).send("Not allowed");
 
-    barber.status = barber.status==="Active"?"Inactive":"Active";
+    if(barber.status === "Active"){
+        barber.status = "Inactive";
+    }
+    else{
+        barber.status = "Active";
+    }
     await barber.save();
 
     res.json(barber);
 });
 
-router.delete("/:id", async (req,res)=>{
-    await Barber.findByIdAndDelete(req.params.id);
-    res.json({success:true});
+router.delete("/:id", auth("shop"), async(req,res)=>{
+    await Barber.deleteOne({_id:req.params.id, shop:req.user.id});
+    res.send("Deleted");
 });
 
 module.exports = router;

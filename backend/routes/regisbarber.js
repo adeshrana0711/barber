@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const Barber = require('../models/Barber');
+const Barber = require('../models/Shop');
 
 router.post('/registration', async (req, res) => {
     try {
-
         const { fullname, email, phone, password, location } = req.body;
 
         const existing = await Barber.findOne({ email });

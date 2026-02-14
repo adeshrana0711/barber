@@ -2,22 +2,22 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 
-const Barber = require('../models/Barber');
+const shop = require('../models/Shop');
 
 router.post('/login', async (req, res) => {
     try{
         const { email, password } = req.body;
 
-        const barber = await Barber.findOne({ email });
-        if (!barber || barber.password !== password) {
+        const shopName = await shop.findOne({ email });
+        if (!shopName || shopName.password !== password) {
             return res.send("Invalid Email or Password");
         }
 
         const token = jwt.sign(
             {
-                id: barber.id,
-                role: "barber",
-                email: barber.email
+                id: shopName._id,
+                role: "shop",
+                email: shopName.email
             },
             process.env.JWT_SECRET || "SECRET_KEY",
             { expiresIn: "2m" }   
@@ -30,7 +30,7 @@ router.post('/login', async (req, res) => {
             sameSite: "lax"
         });
 
-        const redirectUrl = req.query.redirect || "/barber/dashboard";
+        const redirectUrl = req.query.redirect || "/shop/dashboard";
         res.redirect(redirectUrl);
 
     }catch(error){

@@ -2,14 +2,14 @@ const express = require('express');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const Barber = require('./models/Barber');
+
+const shop = require('./models/Shop');
 const Appointment = require('./models/appointment');
 const barberRoutes = require("./routes/barberRoutes");
-
 require('./config/db');
 
 const auth = require('./middlewares/auth');
-const barberLoginRoute = require('./routes/Loginbarber');
+const barberLoginRoute = require('./routes/shopLogin');
 const clientLoginRoute = require('./routes/LoginClient');
 
 const barberRegisterRoute = require('./routes/regisbarber');
@@ -26,22 +26,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 app.use("/api/barbers", barberRoutes);
+app.use("/shop",barberRegisterRoute)
+
+app.use("/client",clientLoginRoute);
+app.use("/client",clientRegisterRoute);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'html', 'index.html'));
 });
 
-app.get('/barber/login', (req, res) => {
+app.get('/shop/login', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'html', 'login.html'));
 });
-app.use('/barber', barberLoginRoute);
+app.use('/shop', barberLoginRoute);
 
 app.get("/client/login",(req,res)=>{
     res.sendFile(path.join(__dirname, '..', 'frontend', 'html', 'loginClient.html'));
 })
 app.use('/client', clientLoginRoute);
 
-app.get('/barber/registration', (req, res) => {
+app.get('/shop/registration', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'html', 'registration.html'));
 });
 app.use('/barber', barberRegisterRoute);
@@ -51,8 +55,8 @@ app.get("/client/registration",(req,res)=>{
 })
 app.use('/client', clientRegisterRoute);
 
-app.get('/barber/dashboard',auth("barber"),(req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'html', 'barberDashboard.html'));
+app.get('/shop/dashboard',auth("shop"),(req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'frontend', 'html', 'shopDashboard.html'));
 });
 
 app.get('/logout',(req,res)=>{
@@ -60,10 +64,10 @@ app.get('/logout',(req,res)=>{
     res.redirect("/");
 });
 
-app.get('/barbers', async (req, res) => {
+app.get('/shops', async (req, res) => {
     try {
-        const barbers = await Barber.find().select("-password");
-        res.json(barbers);
+        const shops = await shop.find().select("-password");
+        res.json(shops);
     } catch (error) {
         res.status(500).send("Error fetching barbers");
     }
@@ -99,6 +103,26 @@ app.post('/appointment/:id', auth("client"), async (req,res)=>{
     await newAppointment.save();
 
     res.send("Booking Successful");
+});
+
+app.get("/me", (req,res)=>{
+    try{
+        const token = req.cookies.token;
+
+        if(!token){
+            return res.json({loggedIn:false});
+        }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        res.json({
+            loggedIn:true,
+            role:decoded.role,
+            id:decoded.id
+        });
+
+    }catch(err){
+        res.json({loggedIn:false});
+    }
 });
 
 app.listen(port, () => {

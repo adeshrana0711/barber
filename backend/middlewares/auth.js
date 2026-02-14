@@ -1,28 +1,26 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
-function auth(role){
+module.exports = function(role){
+
     return function(req,res,next){
-
         const token = req.cookies.token;
-
-        if(!token){
-            return res.redirect(`/${role}/login?redirect=` + req.originalUrl);
-        }
+        if(!token) return res.status(401).send("Login required");
 
         try{
-            const decoded = jwt.verify(token, process.env.JWT_SECRET || "SECRET_KEY");
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            if(role && decoded.role !== role){
-                return res.redirect(`/${decoded.role}/dashboard`);
-            }
+            if(decoded.role !== role)
+                return res.status(403).send("Access denied");
 
-            req.user = decoded;
+            req.user = {
+                id: decoded.id,
+                role: decoded.role
+            };
+
             next();
 
-        }catch(error){
-            return res.redirect(`/${role}/login?redirect=` + req.originalUrl);
+        }catch(err){
+            res.status(401).send("Invalid token");
         }
-    };
+    }
 }
-
-module.exports = auth;

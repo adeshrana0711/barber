@@ -190,7 +190,6 @@ async function checkUser(){
     const navLinks = document.querySelector(".links");
 
     if(data.loggedIn && data.role === "client"){
-
         roleSection.innerHTML = "";
 
         navLinks.innerHTML = `
@@ -201,12 +200,11 @@ async function checkUser(){
         `;
 
     }else{
-
         roleSection.innerHTML = `
             <h2 class="role-title">Welcome to Barber Finder</h2>
             <p class="role-sub">Choose your role to continue</p>
             <div class="btns">
-                <button class="role-button" onclick="location.href='/barber/login'">
+                <button class="role-button" onclick="location.href='/shop/login'">
                     I am a Barber
                 </button>
                 <button class="role-button" onclick="location.href='/client/login'">
@@ -219,7 +217,7 @@ async function checkUser(){
 
 checkUser();
 
-fetch('/barbers')
+fetch('/shops')
 .then(res => res.json())
 .then(barbers => {
 

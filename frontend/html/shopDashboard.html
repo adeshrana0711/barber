@@ -324,7 +324,6 @@ th,td{
 </div>
 <script>
 
-/* SECTION SWITCH */
 function showSection(id){
     document.querySelectorAll(".section").forEach(sec=>{
         sec.classList.remove("active");
@@ -332,7 +331,6 @@ function showSection(id){
     document.getElementById(id).classList.add("active");
 }
 
-/* MODAL CONTROL */
 function openModal(){
     document.getElementById("barberModal").style.display="flex";
 }
@@ -340,7 +338,6 @@ function closeModal(){
     document.getElementById("barberModal").style.display="none";
 }
 
-/* LOAD BARBERS WHEN PAGE OPENS */
 window.onload = loadBarbers;
 
 async function loadBarbers(){
@@ -368,8 +365,6 @@ async function loadBarbers(){
         `);
     });
 }
-
-/* ADD BARBER (SAVE TO DATABASE) */
 async function addBarber(){
 
     const name=document.getElementById("bName").value;
@@ -381,7 +376,6 @@ async function addBarber(){
         alert("Please fill all fields");
         return;
     }
-
     const res = await fetch("/api/barbers/add",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
@@ -395,10 +389,9 @@ async function addBarber(){
     document.getElementById("bLocation").value="";
     document.getElementById("bSkills").value="";
 
-    loadBarbers(); // refresh table
+    loadBarbers(); 
 }
 
-/* TOGGLE ACTIVE / INACTIVE */
 async function toggleStatus(btn){
 
     const row = btn.closest("tr");
@@ -419,8 +412,6 @@ async function toggleStatus(btn){
         btn.innerText="Activate";
     }
 }
-
-/* DELETE BARBER */
 async function deleteBarber(btn){
 
     if(!confirm("Remove this barber?")) return;
@@ -432,7 +423,6 @@ async function deleteBarber(btn){
     row.remove();
 }
 
-/* CLICK OUTSIDE CLOSE MODAL */
 window.onclick=function(e){
     if(e.target.id==="barberModal"){
         closeModal();

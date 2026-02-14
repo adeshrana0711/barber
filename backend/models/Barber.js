@@ -1,36 +1,19 @@
 const mongoose = require("mongoose");
 
 const BarberSchema = new mongoose.Schema({
-
-    name: {
-        type: String,
-        required: true,
-        trim: true
+    name:String,
+    location:String,
+    skills:String,
+    status:{
+        type:String,
+        default:"Active"
     },
 
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true
-    },
-
-    phone: {
-        type: String,
-        required: true
-    },
-
-    password: {
-        type: String,
-        required: true
-    },
-
-    location: {
-        type: String,
-        required: true,
-        trim: true
+    shop:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Shop",
+        required:true
     }
+},{timestamps:true});
 
-});
-
-module.exports = mongoose.model("Barber", BarberSchema);
+module.exports = mongoose.model("Barber",BarberSchema);
