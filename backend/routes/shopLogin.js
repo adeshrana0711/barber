@@ -22,20 +22,13 @@ router.post('/login', async (req, res) => {
             process.env.JWT_SECRET || "SECRET_KEY",
             { expiresIn: "2m" }   
         );
-
-        res.clearCookie("token");
-
-        res.cookie("token", token, {
-            httpOnly: true,
-            sameSite: "lax"
-        });
+        res.cookie("token", token,{httpOnly: true});
 
         const redirectUrl = req.query.redirect || "/shop/dashboard";
         res.redirect(redirectUrl);
 
     }catch(error){
-        console.log(error);
-        res.status(500).send("Server Error");
+        res.send("Server Error");
     }
 });
 

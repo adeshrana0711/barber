@@ -214,31 +214,40 @@ async function checkUser(){
         `;
     }
 }
-
 checkUser();
 
 fetch('/shops')
 .then(res => res.json())
-.then(barbers => {
+.then(shops => {
 
     const list = document.getElementById("barberList");
+    list.innerHTML = "";
 
-    barbers.forEach(barber => {
+    shops.forEach(shop => {
 
         const div = document.createElement("div");
         div.className = "barber-card";
 
         div.innerHTML = `
-            <h3>${barber.name}</h3>
-            <p>Location: ${barber.location}</p>
-            <button class="book-btn" onclick="book('${barber._id}')">
-              Book Appointment
-            </button>
+            <h3>${shop.name}</h3>
+            <p>Location: ${shop.location}</p>
+            <button class="book-btn">View Barbers</button>
         `;
+
+        div.querySelector("button").addEventListener("click", ()=>{
+            window.location.href = `/shop/${shop._id}`;
+        });
 
         list.appendChild(div);
     });
 });
+
+
+
+window.openShop = function(shopId){
+    window.location.href = `/shop/${shopId}`;
+}
+
 
 function book(barberId){
     window.location.href = `/appointment/${barberId}`;

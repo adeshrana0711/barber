@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Barber = require('../models/Shop');
 
-router.post('/registration', async (req, res) => {
+router.post('/registration', async(req,res) => {
     try {
         const { fullname, email, phone, password, location } = req.body;
 
@@ -24,7 +24,6 @@ router.post('/registration', async (req, res) => {
         res.json({ message: "Barber Registered Successfully" });
 
     } catch (error) {
-        console.log("REGISTER ERROR:", error);
         res.status(500).json({ message: "Server Error" });
     }
 });

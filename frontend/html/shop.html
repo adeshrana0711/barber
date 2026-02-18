@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Shop Details</title>
+
+<style>
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#f4f6f9;
+}
+
+.container{
+    max-width:1000px;
+    margin:40px auto;
+}
+
+.shop-card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.08);
+    margin-bottom:30px;
+}
+
+.barber-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+}
+
+.barber{
+    background:white;
+    width:230px;
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 4px 18px rgba(0,0,0,0.08);
+}
+
+.barber button{
+    margin-top:10px;
+    padding:8px 15px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="shopInfo" class="shop-card"></div>
+
+<h2>Available Barbers</h2>
+<div id="barbers" class="barber-list"></div>
+
+</div>
+
+<script>
+
+const shopId = window.location.pathname.split("/").pop();
+
+fetch(`/shop/${shopId}/data`)
+.then(res=>res.json())
+.then(data=>{
+
+    document.getElementById("shopInfo").innerHTML = `
+        <h2>${data.shop.name}</h2>
+        <p><b>Location:</b> ${data.shop.location}</p>
+    `;
+
+    const list = document.getElementById("barbers");
+    list.innerHTML="";
+
+    data.barbers.forEach(b => {
+
+    const div = document.createElement("div");
+    div.className = "barber";
+
+    div.innerHTML = `
+        <h3>${b.name}</h3>
+        <p><b>Skill:</b> ${b.skills || "Not specified"}</p>
+        <p><b>Status:</b> ${b.status}</p>
+        <button class="book-btn">Book Appointment</button>
+    `;
+
+    div.querySelector("button").addEventListener("click", () => {
+        window.location.href = `/appointment/${b._id}`;
+    });
+
+    list.appendChild(div);
+});
+
+});
+
+
+
+
+function book(barberId){
+    window.location.href = `/appointment/${barberId}`;
+}
+
+</script>
+
+</body>
+</html>

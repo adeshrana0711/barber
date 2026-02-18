@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const shop = require('./models/Shop');
 const Appointment = require('./models/appointment');
 const barberRoutes = require("./routes/barberRoutes");
+const Barber = require('./models/Barber');
 require('./config/db');
 
 const auth = require('./middlewares/auth');
@@ -14,6 +15,8 @@ const clientLoginRoute = require('./routes/LoginClient');
 
 const barberRegisterRoute = require('./routes/regisbarber');
 const clientRegisterRoute = require('./routes/regisClient');
+const shopRoutes = require("./routes/shop");
+
 
 require('dotenv').config();
 
@@ -27,6 +30,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 app.use("/api/barbers", barberRoutes);
 app.use("/shop",barberRegisterRoute)
+app.use("/shop", shopRoutes);
+
 
 app.use("/client",clientLoginRoute);
 app.use("/client",clientRegisterRoute);
@@ -75,6 +80,11 @@ app.get('/shops', async (req, res) => {
 app.get('/appointment/:id', auth("client"), (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'html', 'appointment.html'));
 });
+
+app.get('/shop/:id', (req,res)=>{
+    res.sendFile(path.join(__dirname,'..','frontend','html','shop.html'));
+});
+
 
 app.post('/appointment/:id', auth("client"), async (req,res)=>{
 
